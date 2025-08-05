@@ -11,6 +11,7 @@ import (
 
 	"github.com/CharlesPatterson/todos-app/middleware"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -33,9 +34,14 @@ type Todo struct {
 }
 
 func init() {
-	const mongoURI = "mongodb://localhost:27017/"
-	const databaseName = "todos_app"
-	const collectionName = "todos"
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("unable to load .env file: %e", err)
+	}
+
+	mongoURI := os.Getenv("DB_URI")
+	databaseName := os.Getenv("DB_NAME")
+	collectionName := os.Getenv("DB_COLLECTION_NAME")
 
 	clientOptions := options.Client().ApplyURI(mongoURI)
 	client, err := mongo.Connect(ctx, clientOptions)
@@ -319,6 +325,7 @@ func main() {
 					r.Use(middleware.TimeoutMiddleware())
 					r.Use(gin.Logger())
 					r.Use(gin.Recovery())
+					r.SetTrustedProxies(nil)
 					version := "/v1"
 					v1 := r.Group(version)
 					{
@@ -326,7 +333,8 @@ func main() {
 						v1.GET("/todos/:id", getTodoByIdHandler)
 						v1.DELETE("/todos/:id", deleteTodoByIdHandler)
 					}
-					r.Run()
+					port := os.Getenv("PORT")
+					r.Run(port)
 					return nil
 				},
 			},
@@ -337,5 +345,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
