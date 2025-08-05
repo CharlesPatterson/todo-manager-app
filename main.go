@@ -319,9 +319,13 @@ func main() {
 					r.Use(middleware.TimeoutMiddleware())
 					r.Use(gin.Logger())
 					r.Use(gin.Recovery())
-					r.GET("/todos", getAllTodosHandler)
-					r.GET("/todos/:id", getTodoByIdHandler)
-					r.DELETE("/todos/:id", deleteTodoByIdHandler)
+					version := "/v1"
+					v1 := r.Group(version)
+					{
+						v1.GET("/todos", getAllTodosHandler)
+						v1.GET("/todos/:id", getTodoByIdHandler)
+						v1.DELETE("/todos/:id", deleteTodoByIdHandler)
+					}
 					r.Run()
 					return nil
 				},
