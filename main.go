@@ -9,6 +9,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/CharlesPatterson/todos-app/middleware"
 	"github.com/gin-gonic/gin"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -194,6 +195,7 @@ func getAllTodosHandler(c *gin.Context) {
 	todos, err := getAll()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, todos)
@@ -314,6 +316,8 @@ func main() {
 				Usage:   "starts a server to interact with mongodb",
 				Action: func(c *cli.Context) error {
 					r := gin.Default()
+					r.Use(middleware.TimeoutMiddleware())
+					r.Use(gin.Logger())
 					r.GET("/todos", getAllTodosHandler)
 					r.GET("/todos/:id", getTodoByIdHandler)
 					r.DELETE("/todos/:id", deleteTodoByIdHandler)

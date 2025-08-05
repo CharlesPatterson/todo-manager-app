@@ -4,6 +4,7 @@ go 1.24.5
 
 require (
 	github.com/fatih/color v1.18.0
+	github.com/gin-contrib/timeout v1.1.0
 	github.com/gin-gonic/gin v1.10.1
 	github.com/urfave/cli/v2 v2.27.7
 	go.mongodb.org/mongo-driver v1.17.4
