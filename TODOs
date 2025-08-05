@@ -1,0 +1,12 @@
+TODO Add env configuration
+TODO Separate out CLI and API
+TODO Add tests
+TODO Add swaggerdoc support
+TODO Add timeouts
+TODO Add adapter to use Postgres instead
+TODO Add authentication
+TODO Add users / user-specific data
+TODO Setup docker compose for databases
+TODO Add Redis caching
+TODO Add commitlint
+TODO Add github actions
