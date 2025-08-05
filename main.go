@@ -318,6 +318,7 @@ func main() {
 					r := gin.Default()
 					r.Use(middleware.TimeoutMiddleware())
 					r.Use(gin.Logger())
+					r.Use(gin.Recovery())
 					r.GET("/todos", getAllTodosHandler)
 					r.GET("/todos/:id", getTodoByIdHandler)
 					r.DELETE("/todos/:id", deleteTodoByIdHandler)
