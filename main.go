@@ -27,7 +27,7 @@ func runServer() {
 	if os.Getenv("ENVIRONMENT") == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
-	docs.SwaggerInfo.BasePath = "/api/"
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	r.Use(middleware.TimeoutMiddleware())
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
