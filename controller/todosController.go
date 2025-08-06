@@ -121,7 +121,7 @@ func CreateTodoHandler(c *gin.Context) {
 // @ID get-all-todos
 // @Description Get all todos without any filtering
 // @Produce json
-// @Success 200 {object} model.Todo
+// @Success 200 {array} model.Todo
 // @Router /todos [get]
 func GetAllTodosHandler(c *gin.Context) {
 	todos, err := model.GetAll(c)
@@ -138,7 +138,7 @@ func GetAllTodosHandler(c *gin.Context) {
 // @Produce json
 // @Param id path string true "Todo ID"
 // @Success 204 {object} model.Todo
-// @Router /todos [delete]
+// @Router /todos/{id}  [delete]
 func DeleteTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 

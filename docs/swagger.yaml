@@ -34,22 +34,6 @@ info:
   version: "1.0"
 paths:
   /todos:
-    delete:
-      operationId: delete-todo-by-id
-      parameters:
-      - description: Todo ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/model.Todo'
-      summary: Delete a todo
     get:
       description: Get all todos without any filtering
       operationId: get-all-todos
@@ -59,7 +43,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Todo'
+            items:
+              $ref: '#/definitions/model.Todo'
+            type: array
       summary: Get all todos
     post:
       operationId: create-todo
@@ -79,6 +65,22 @@ paths:
             $ref: '#/definitions/model.Todo'
       summary: Create a todo
   /todos/{id}:
+    delete:
+      operationId: delete-todo-by-id
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Todo'
+      summary: Delete a todo
     get:
       operationId: get-todo-by-id
       parameters:
