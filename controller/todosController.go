@@ -11,6 +11,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+func GetRootRedirectHandler(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
+}
+
 // @Summary Get a TODO by ID
 // @ID get-todo-by-id
 // @Produce json
@@ -20,7 +24,7 @@ import (
 func GetTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 
-	todo, err := model.GetTodoById(id)
+	todo, err := model.GetTodoById(c, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -53,7 +57,7 @@ func UpdateTodoByIdHandler(c *gin.Context) {
 		return
 	}
 
-	updatedTodo, err := model.UpdateTodo(&todo, id)
+	updatedTodo, err := model.UpdateTodo(c, &todo, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -105,7 +109,7 @@ func CreateTodoHandler(c *gin.Context) {
 	newTodo.UpdatedAt = time.Now()
 	newTodo.ID = primitive.NewObjectID()
 
-	if err := model.CreateTodo(&newTodo); err != nil {
+	if err := model.CreateTodo(c, &newTodo); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
 		return
 	}
@@ -118,7 +122,7 @@ func CreateTodoHandler(c *gin.Context) {
 // @Success 200 {object} model.Todo
 // @Router /todos [get]
 func GetAllTodosHandler(c *gin.Context) {
-	todos, err := model.GetAll()
+	todos, err := model.GetAll(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -136,7 +140,7 @@ func GetAllTodosHandler(c *gin.Context) {
 func DeleteTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 
-	err := model.DeleteTodoById(id)
+	err := model.DeleteTodoById(c, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

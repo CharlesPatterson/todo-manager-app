@@ -16,9 +16,9 @@ import (
 )
 
 var collection *mongo.Collection
-var ctx = context.TODO()
 
 func init() {
+	var ctx = context.TODO()
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("unable to load .env file: %e", err)
@@ -50,17 +50,17 @@ type Todo struct {
 	Completed bool               `json:"completed" bson:"completed"`
 }
 
-func CreateTodo(todo *Todo) error {
+func CreateTodo(ctx context.Context, todo *Todo) error {
 	_, err := collection.InsertOne(ctx, todo)
 	return err
 }
 
-func GetAll() ([]*Todo, error) {
+func GetAll(ctx context.Context) ([]*Todo, error) {
 	filter := bson.D{{}}
-	return FilterTodos(filter)
+	return FilterTodos(ctx, filter)
 }
 
-func GetTodoById(id string) (*Todo, error) {
+func GetTodoById(ctx context.Context, id string) (*Todo, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func GetTodoById(id string) (*Todo, error) {
 	return t, nil
 }
 
-func UpdateTodo(todo *Todo, id string) (*Todo, error) {
+func UpdateTodo(ctx context.Context, todo *Todo, id string) (*Todo, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -104,7 +104,7 @@ func UpdateTodo(todo *Todo, id string) (*Todo, error) {
 	return t, nil
 }
 
-func FilterTodos(filter interface{}) ([]*Todo, error) {
+func FilterTodos(ctx context.Context, filter interface{}) ([]*Todo, error) {
 	var todos []*Todo
 
 	cur, err := collection.Find(ctx, filter)
@@ -135,7 +135,7 @@ func FilterTodos(filter interface{}) ([]*Todo, error) {
 	return todos, nil
 }
 
-func CompleteTodo(text string) error {
+func CompleteTodo(ctx context.Context, text string) error {
 	filter := bson.D{primitive.E{Key: "text", Value: text}}
 
 	update := bson.D{primitive.E{Key: "$set", Value: bson.D{
@@ -146,23 +146,23 @@ func CompleteTodo(text string) error {
 	return collection.FindOneAndUpdate(ctx, filter, update).Decode(t)
 }
 
-func GetPending() ([]*Todo, error) {
+func GetPending(ctx context.Context) ([]*Todo, error) {
 	filter := bson.D{
 		primitive.E{Key: "completed", Value: false},
 	}
 
-	return FilterTodos(filter)
+	return FilterTodos(ctx, filter)
 }
 
-func GetFinished() ([]*Todo, error) {
+func GetFinished(ctx context.Context) ([]*Todo, error) {
 	filter := bson.D{
 		primitive.E{Key: "completed", Value: true},
 	}
 
-	return FilterTodos(filter)
+	return FilterTodos(ctx, filter)
 }
 
-func DeleteTodoById(id string) error {
+func DeleteTodoById(ctx context.Context, id string) error {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return err
@@ -182,7 +182,7 @@ func DeleteTodoById(id string) error {
 	return nil
 }
 
-func DeleteTodo(text string) error {
+func DeleteTodo(ctx context.Context, text string) error {
 	filter := bson.D{
 		primitive.E{Key: "text", Value: text},
 	}

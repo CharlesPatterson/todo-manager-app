@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -22,25 +23,27 @@ import (
 )
 
 func runServer() {
-	r := gin.Default()
+	r := gin.New()
 	if os.Getenv("ENVIRONMENT") == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = "/api/"
 	r.Use(middleware.TimeoutMiddleware())
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.SetTrustedProxies(nil)
+	r.Static("/assets", "./assets")
 	version := "/api/v1"
 	v1 := r.Group(version)
 	{
-		v1.POST("/todos", controller.CreateTodoHandler)
 		v1.GET("/todos", controller.GetAllTodosHandler)
-		v1.GET("/todos/:id", controller.GetTodoByIdHandler)
 		v1.PUT("/todos/:id", controller.UpdateTodoByIdHandler)
+		v1.POST("/todos", controller.CreateTodoHandler)
+		v1.GET("/todos/:id", controller.GetTodoByIdHandler)
 		v1.DELETE("/todos/:id", controller.DeleteTodoByIdHandler)
 	}
 	if os.Getenv("ENVIRONMENT") != "production" {
+		r.GET("/", controller.GetRootRedirectHandler)
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	}
 	port := os.Getenv("PORT")
@@ -64,7 +67,10 @@ func main() {
 		Name:  "Todos App",
 		Usage: "A simple CLI program to manage your todos",
 		Action: func(c *cli.Context) error {
-			todos, err := model.GetPending()
+			var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+
+			todos, err := model.GetPending(ctx)
 			if err != nil {
 				if err == mongo.ErrNoDocuments {
 					fmt.Print("Nothing to see here.\nRun `add 'todo'` to add a todo")
@@ -94,8 +100,10 @@ func main() {
 						Text:      str,
 						Completed: false,
 					}
+					var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+					defer cancel()
 
-					return model.CreateTodo(todo)
+					return model.CreateTodo(ctx, todo)
 				},
 			},
 			{
@@ -103,7 +111,10 @@ func main() {
 				Aliases: []string{"l"},
 				Usage:   "list all todos",
 				Action: func(c *cli.Context) error {
-					todos, err := model.GetAll()
+					var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+					defer cancel()
+
+					todos, err := model.GetAll(ctx)
 					if err != nil {
 						if err == mongo.ErrNoDocuments {
 							fmt.Print("Nothing to see here.\nRun `add 'todo'` to add a todo")
@@ -121,8 +132,11 @@ func main() {
 				Aliases: []string{"d"},
 				Usage:   "complete a todo on the list",
 				Action: func(c *cli.Context) error {
+					var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+					defer cancel()
+
 					text := c.Args().First()
-					return model.CompleteTodo(text)
+					return model.CompleteTodo(ctx, text)
 				},
 			},
 			{
@@ -130,7 +144,10 @@ func main() {
 				Aliases: []string{"f"},
 				Usage:   "list completed todos",
 				Action: func(c *cli.Context) error {
-					todos, err := model.GetFinished()
+					var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+					defer cancel()
+
+					todos, err := model.GetFinished(ctx)
 					if err != nil {
 						if err == mongo.ErrNoDocuments {
 							fmt.Print("Nothing to see here.\nRun `add 'todo'` to add a todo")
@@ -148,8 +165,11 @@ func main() {
 				Aliases: []string{"rm"},
 				Usage:   "deletes a todo on the list",
 				Action: func(c *cli.Context) error {
+					var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+					defer cancel()
+
 					text := c.Args().First()
-					err := model.DeleteTodo(text)
+					err := model.DeleteTodo(ctx, text)
 					if err != nil {
 						return err
 					}

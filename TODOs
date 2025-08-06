@@ -7,3 +7,11 @@ TODO Setup docker compose for databases
 TODO Add Redis caching
 TODO Add commitlint
 TODO Add github actions
+TODO Add gosec scanning
+TODO Add LetsEncrypt
+TODO Add security headers
+TODO Add parsing some query parameters
+TODO Add a form post
+TODO Add support for HEAD request
+TODO Add file upload
+TODO Add writing to a log file
