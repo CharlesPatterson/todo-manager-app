@@ -46,8 +46,12 @@ func runServer() {
 		v1.DELETE("/todos/:id", controller.DeleteTodoByIdHandler)
 	}
 	if os.Getenv("ENVIRONMENT") != "production" {
-		r.GET("/", controller.GetRootRedirectHandler)
-		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+		authorized := r.Group("/")
+		authorized.Use(middleware.BasicAuthMiddleware())
+		{
+			authorized.GET("/", controller.GetRootRedirectHandler)
+			authorized.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+		}
 	}
 	port := os.Getenv("PORT")
 	r.Run(port)
