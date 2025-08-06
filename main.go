@@ -12,6 +12,7 @@ import (
 	docs "github.com/CharlesPatterson/todos-app/docs"
 	"github.com/CharlesPatterson/todos-app/middleware"
 	"github.com/CharlesPatterson/todos-app/model"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -28,6 +29,7 @@ func runServer() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	docs.SwaggerInfo.BasePath = "/api/v1"
+	r.Use(gzip.Gzip(gzip.DefaultCompression))
 	r.Use(middleware.TimeoutMiddleware())
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
