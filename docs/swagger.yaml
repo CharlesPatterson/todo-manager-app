@@ -13,6 +13,13 @@ definitions:
       updated_at:
         type: string
     type: object
+  model.TodoDocInput:
+    properties:
+      completed:
+        type: boolean
+      text:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -30,7 +37,7 @@ paths:
     delete:
       operationId: delete-todo-by-id
       parameters:
-      - description: model.Todo ID
+      - description: Todo ID
         in: path
         name: id
         required: true
@@ -38,13 +45,16 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/model.Todo'
       summary: Delete a todo
     get:
       description: Get all todos without any filtering
+      operationId: get-all-todos
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
@@ -54,12 +64,12 @@ paths:
     post:
       operationId: create-todo
       parameters:
-      - description: model.Todo data
+      - description: Todo data
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/model.Todo'
+          $ref: '#/definitions/model.TodoDocInput'
       produces:
       - application/json
       responses:
@@ -88,23 +98,26 @@ paths:
     put:
       operationId: update-todo-by-id
       parameters:
-      - description: model.Todo ID
+      - description: Todo ID
         in: path
         name: id
         required: true
         type: string
-      - description: model.Todo data
+      - description: Todo data
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/model.Todo'
+          $ref: '#/definitions/model.TodoDocInput'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/model.Todo'
       summary: Update a TODO by ID
+schemes:
+- http
+- https
 swagger: "2.0"

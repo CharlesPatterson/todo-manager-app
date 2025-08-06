@@ -15,3 +15,9 @@ TODO Add a form post
 TODO Add support for HEAD request
 TODO Add file upload
 TODO Add writing to a log file
+TODO Add graceful restart/stop
+TODO Add error-handling middleware
+TODO Add structured logging
+TODO Add managing TODO list graphically
+TODO Add failures to gin-swagger defs
+TODO Add GraphQL version of the API

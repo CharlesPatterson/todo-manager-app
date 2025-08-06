@@ -26,7 +26,11 @@ const docTemplate = `{
         "/todos": {
             "get": {
                 "description": "Get all todos without any filtering",
+                "produces": [
+                    "application/json"
+                ],
                 "summary": "Get all todos",
+                "operationId": "get-all-todos",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -44,12 +48,12 @@ const docTemplate = `{
                 "operationId": "create-todo",
                 "parameters": [
                     {
-                        "description": "model.Todo data",
+                        "description": "Todo data",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Todo"
+                            "$ref": "#/definitions/model.TodoDocInput"
                         }
                     }
                 ],
@@ -71,15 +75,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "model.Todo ID",
+                        "description": "Todo ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
                             "$ref": "#/definitions/model.Todo"
                         }
@@ -121,24 +125,24 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "model.Todo ID",
+                        "description": "Todo ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "model.Todo data",
+                        "description": "Todo data",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Todo"
+                            "$ref": "#/definitions/model.TodoDocInput"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
                             "$ref": "#/definitions/model.Todo"
                         }
@@ -167,6 +171,17 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "model.TodoDocInput": {
+            "type": "object",
+            "properties": {
+                "completed": {
+                    "type": "boolean"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
         }
     }
 }`
@@ -176,7 +191,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",
 	BasePath:         "/api/v1",
-	Schemes:          []string{},
+	Schemes:          []string{"http", "https"},
 	Title:            "Gin Todo API",
 	Description:      "CLI and API for managing TODOs in MongoDB",
 	InfoInstanceName: "swagger",

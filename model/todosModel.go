@@ -42,6 +42,11 @@ func init() {
 	collection = client.Database(databaseName).Collection(collectionName)
 }
 
+type TodoDocInput struct {
+	Text      string `json:"text" bson:"text"`
+	Completed bool   `json:"completed" bson:"completed"`
+}
+
 type Todo struct {
 	ID        primitive.ObjectID `json:"_id" bson:"_id"`
 	CreatedAt time.Time          `json:"created_at" bson:"created_at"`
@@ -76,10 +81,10 @@ func GetTodoById(ctx context.Context, id string) (*Todo, error) {
 	return t, nil
 }
 
-func UpdateTodo(ctx context.Context, todo *Todo, id string) (*Todo, error) {
+func UpdateTodo(ctx context.Context, todo *Todo, id string) error {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	filter := bson.D{primitive.E{
@@ -88,7 +93,7 @@ func UpdateTodo(ctx context.Context, todo *Todo, id string) (*Todo, error) {
 	t := &Todo{}
 	err = collection.FindOne(ctx, filter).Decode(t)
 	if err != nil {
-		return t, err
+		return err
 	}
 
 	update := bson.M{
@@ -101,7 +106,7 @@ func UpdateTodo(ctx context.Context, todo *Todo, id string) (*Todo, error) {
 
 	collection.UpdateOne(ctx, filter, update)
 
-	return t, nil
+	return nil
 }
 
 func FilterTodos(ctx context.Context, filter interface{}) ([]*Todo, error) {

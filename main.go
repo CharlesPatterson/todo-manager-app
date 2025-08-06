@@ -63,6 +63,7 @@ func runServer() {
 // @license.url https://opensource.org/licenses/MIT
 // @host localhost:8080
 // @BasePath /api/v1
+// @schemes http https
 // @query.collection.format multi
 func main() {
 	app := &cli.App{

@@ -36,9 +36,9 @@ func GetTodoByIdHandler(c *gin.Context) {
 // @Summary Update a TODO by ID
 // @ID update-todo-by-id
 // @Produce json
-// @Param id path string true "model.Todo ID"
-// @Param data body model.Todo true "model.Todo data"
-// @Success 200 {object} model.Todo
+// @Param id path string true "Todo ID"
+// @Param data body model.TodoDocInput true "Todo data"
+// @Success 204 {object} model.Todo
 // @Router /todos/{id} [put]
 func UpdateTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")
@@ -57,13 +57,13 @@ func UpdateTodoByIdHandler(c *gin.Context) {
 		return
 	}
 
-	updatedTodo, err := model.UpdateTodo(c, &todo, id)
+	err := model.UpdateTodo(c, &todo, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, updatedTodo)
+	c.JSON(http.StatusNoContent, "")
 }
 
 type ErrorMsg struct {
@@ -86,7 +86,7 @@ func getErrorMsg(fe validator.FieldError) string {
 // @Summary Create a todo
 // @ID create-todo
 // @Produce json
-// @Param data body model.Todo true "model.Todo data"
+// @Param data body model.TodoDocInput true "Todo data"
 // @Success 200 {object} model.Todo
 // @Router /todos [post]
 func CreateTodoHandler(c *gin.Context) {
@@ -118,7 +118,9 @@ func CreateTodoHandler(c *gin.Context) {
 }
 
 // @Summary Get all todos
+// @ID get-all-todos
 // @Description Get all todos without any filtering
+// @Produce json
 // @Success 200 {object} model.Todo
 // @Router /todos [get]
 func GetAllTodosHandler(c *gin.Context) {
@@ -134,8 +136,8 @@ func GetAllTodosHandler(c *gin.Context) {
 // @Summary Delete a todo
 // @ID delete-todo-by-id
 // @Produce json
-// @Param id path string true "model.Todo ID"
-// @Success 200 {object} model.Todo
+// @Param id path string true "Todo ID"
+// @Success 204 {object} model.Todo
 // @Router /todos [delete]
 func DeleteTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")

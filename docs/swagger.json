@@ -1,4 +1,8 @@
 {
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
         "description": "CLI and API for managing TODOs in MongoDB",
@@ -20,7 +24,11 @@
         "/todos": {
             "get": {
                 "description": "Get all todos without any filtering",
+                "produces": [
+                    "application/json"
+                ],
                 "summary": "Get all todos",
+                "operationId": "get-all-todos",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -38,12 +46,12 @@
                 "operationId": "create-todo",
                 "parameters": [
                     {
-                        "description": "model.Todo data",
+                        "description": "Todo data",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Todo"
+                            "$ref": "#/definitions/model.TodoDocInput"
                         }
                     }
                 ],
@@ -65,15 +73,15 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "model.Todo ID",
+                        "description": "Todo ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
                             "$ref": "#/definitions/model.Todo"
                         }
@@ -115,24 +123,24 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "model.Todo ID",
+                        "description": "Todo ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "model.Todo data",
+                        "description": "Todo data",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Todo"
+                            "$ref": "#/definitions/model.TodoDocInput"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
                             "$ref": "#/definitions/model.Todo"
                         }
@@ -158,6 +166,17 @@
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.TodoDocInput": {
+            "type": "object",
+            "properties": {
+                "completed": {
+                    "type": "boolean"
+                },
+                "text": {
                     "type": "string"
                 }
             }
