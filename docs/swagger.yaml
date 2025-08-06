@@ -1,0 +1,110 @@
+basePath: /api/v1
+definitions:
+  model.Todo:
+    properties:
+      _id:
+        type: string
+      completed:
+        type: boolean
+      created_at:
+        type: string
+      text:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: pattercm@gmail.com
+    name: Charles Patterson
+    url: https://github.com/CharlesPatterson/
+  description: CLI and API for managing TODOs in MongoDB
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Gin Todo API
+  version: "1.0"
+paths:
+  /todos:
+    delete:
+      operationId: delete-todo-by-id
+      parameters:
+      - description: model.Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+      summary: Delete a todo
+    get:
+      description: Get all todos without any filtering
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+      summary: Get all todos
+    post:
+      operationId: create-todo
+      parameters:
+      - description: model.Todo data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Todo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+      summary: Create a todo
+  /todos/{id}:
+    get:
+      operationId: get-todo-by-id
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+      summary: Get a TODO by ID
+    put:
+      operationId: update-todo-by-id
+      parameters:
+      - description: model.Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: model.Todo data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.Todo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+      summary: Update a TODO by ID
+swagger: "2.0"

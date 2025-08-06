@@ -43,11 +43,11 @@ func init() {
 }
 
 type Todo struct {
-	ID        primitive.ObjectID `bson:"_id"`
-	CreatedAt time.Time          `bson:"created_at"`
-	UpdatedAt time.Time          `bson:"updated_at"`
-	Text      string             `bson:"text"`
-	Completed bool               `bson:"completed"`
+	ID        primitive.ObjectID `json:"_id" bson:"_id"`
+	CreatedAt time.Time          `json:"created_at" bson:"created_at"`
+	UpdatedAt time.Time          `json:"updated_at" bson:"updated_at"`
+	Text      string             `json:"text" bson:"text"`
+	Completed bool               `json:"completed" bson:"completed"`
 }
 
 func CreateTodo(todo *Todo) error {
@@ -61,11 +61,14 @@ func GetAll() ([]*Todo, error) {
 }
 
 func GetTodoById(id string) (*Todo, error) {
-	filter := bson.D{primitive.E{
-		Key: "_id", Value: id,
-	}}
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.M{"_id": objectId}
 	t := &Todo{}
-	err := collection.FindOne(ctx, filter).Decode(t)
+	err = collection.FindOne(ctx, filter).Decode(t)
 	if err != nil {
 		return t, err
 	}
@@ -73,12 +76,17 @@ func GetTodoById(id string) (*Todo, error) {
 	return t, nil
 }
 
-func UpdateTodo(todo *Todo) (*Todo, error) {
+func UpdateTodo(todo *Todo, id string) (*Todo, error) {
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
 	filter := bson.D{primitive.E{
-		Key: "_id", Value: todo.ID,
+		Key: "_id", Value: objectId,
 	}}
 	t := &Todo{}
-	err := collection.FindOne(ctx, filter).Decode(t)
+	err = collection.FindOne(ctx, filter).Decode(t)
 	if err != nil {
 		return t, err
 	}

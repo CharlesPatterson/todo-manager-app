@@ -8,9 +8,12 @@ import (
 	"time"
 
 	"github.com/CharlesPatterson/todos-app/controller"
+	docs "github.com/CharlesPatterson/todos-app/docs"
 	"github.com/CharlesPatterson/todos-app/middleware"
 	"github.com/CharlesPatterson/todos-app/model"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -23,29 +26,39 @@ func runServer() {
 	if os.Getenv("ENVIRONMENT") == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	r.Use(middleware.TimeoutMiddleware())
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.SetTrustedProxies(nil)
-	version := "/v1"
+	version := "/api/v1"
 	v1 := r.Group(version)
 	{
-		v1.GET("/todos", controller.GetAllTodosHandler)
-		v1.PUT("/todos/:id", controller.UpdateTodoHandler)
 		v1.POST("/todos", controller.CreateTodoHandler)
+		v1.GET("/todos", controller.GetAllTodosHandler)
 		v1.GET("/todos/:id", controller.GetTodoByIdHandler)
+		v1.PUT("/todos/:id", controller.UpdateTodoByIdHandler)
 		v1.DELETE("/todos/:id", controller.DeleteTodoByIdHandler)
 	}
-	/*
-		{
-			r.Group("/swagger/").Handler(http.StripPrefix("/swagger", http.FileServer(http.Dir("swagger"))))
-		}
-	*/
+	if os.Getenv("ENVIRONMENT") != "production" {
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	}
 	port := os.Getenv("PORT")
 	r.Run(port)
 
 }
 
+// @title Gin Todo API
+// @version 1.0
+// @description CLI and API for managing TODOs in MongoDB
+// @contact.name Charles Patterson
+// @contact.url https://github.com/CharlesPatterson/
+// @contact.email pattercm@gmail.com
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+// @host localhost:8080
+// @BasePath /api/v1
+// @query.collection.format multi
 func main() {
 	app := &cli.App{
 		Name:  "Todos App",

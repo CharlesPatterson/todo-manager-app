@@ -11,6 +11,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// @Summary Get a TODO by ID
+// @ID get-todo-by-id
+// @Produce json
+// @Param id path string true "Todo ID"
+// @Success 200 {object} model.Todo
+// @Router /todos/{id} [get]
 func GetTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 
@@ -23,7 +29,16 @@ func GetTodoByIdHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, todo)
 }
 
-func UpdateTodoHandler(c *gin.Context) {
+// @Summary Update a TODO by ID
+// @ID update-todo-by-id
+// @Produce json
+// @Param id path string true "model.Todo ID"
+// @Param data body model.Todo true "model.Todo data"
+// @Success 200 {object} model.Todo
+// @Router /todos/{id} [put]
+func UpdateTodoByIdHandler(c *gin.Context) {
+	id := c.Param("id")
+
 	var todo model.Todo
 	if err := c.BindJSON(&todo); err != nil {
 
@@ -38,7 +53,7 @@ func UpdateTodoHandler(c *gin.Context) {
 		return
 	}
 
-	updatedTodo, err := model.UpdateTodo(&todo)
+	updatedTodo, err := model.UpdateTodo(&todo, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -64,6 +79,12 @@ func getErrorMsg(fe validator.FieldError) string {
 	return "Unknown error"
 }
 
+// @Summary Create a todo
+// @ID create-todo
+// @Produce json
+// @Param data body model.Todo true "model.Todo data"
+// @Success 200 {object} model.Todo
+// @Router /todos [post]
 func CreateTodoHandler(c *gin.Context) {
 	var newTodo model.Todo
 
@@ -94,8 +115,8 @@ func CreateTodoHandler(c *gin.Context) {
 
 // @Summary Get all todos
 // @Description Get all todos without any filtering
-// @Success 200 {object} Todo
-// @Router /v1/todos [get]
+// @Success 200 {object} model.Todo
+// @Router /todos [get]
 func GetAllTodosHandler(c *gin.Context) {
 	todos, err := model.GetAll()
 	if err != nil {
@@ -106,6 +127,12 @@ func GetAllTodosHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, todos)
 }
 
+// @Summary Delete a todo
+// @ID delete-todo-by-id
+// @Produce json
+// @Param id path string true "model.Todo ID"
+// @Success 200 {object} model.Todo
+// @Router /todos [delete]
 func DeleteTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 

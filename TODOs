@@ -1,6 +1,5 @@
 TODO Separate out CLI and API
 TODO Add tests
-TODO Add swaggerdoc support
 TODO Add adapter to use Postgres instead
 TODO Add authentication
 TODO Add users / user-specific data
