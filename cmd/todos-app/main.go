@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	golangtodomanager "github.com/CharlesPatterson/todos-app"
 	"github.com/CharlesPatterson/todos-app/controller"
 	docs "github.com/CharlesPatterson/todos-app/docs"
 	"github.com/CharlesPatterson/todos-app/middleware"
@@ -67,8 +68,9 @@ func runServer() {
 // @query.collection.format multi
 func main() {
 	app := &cli.App{
-		Name:  "Todos App",
-		Usage: "A simple CLI program to manage your todos",
+		Version: golangtodomanager.Version,
+		Name:    "Todos App",
+		Usage:   "A simple CLI program to manage your todos",
 		Action: func(c *cli.Context) error {
 			var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
@@ -89,7 +91,7 @@ func main() {
 			{
 				Name:    "add",
 				Aliases: []string{"a"},
-				Usage:   "add a todo to the list",
+				Usage:   "Add a todo to the list",
 				Action: func(c *cli.Context) error {
 					str := c.Args().First()
 					if str == "" {
@@ -112,7 +114,7 @@ func main() {
 			{
 				Name:    "all",
 				Aliases: []string{"l"},
-				Usage:   "list all todos",
+				Usage:   "List all todos",
 				Action: func(c *cli.Context) error {
 					var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 					defer cancel()
@@ -133,7 +135,7 @@ func main() {
 			{
 				Name:    "done",
 				Aliases: []string{"d"},
-				Usage:   "complete a todo on the list",
+				Usage:   "Complete a todo on the list",
 				Action: func(c *cli.Context) error {
 					var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 					defer cancel()
@@ -145,7 +147,7 @@ func main() {
 			{
 				Name:    "finished",
 				Aliases: []string{"f"},
-				Usage:   "list completed todos",
+				Usage:   "List completed todos",
 				Action: func(c *cli.Context) error {
 					var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 					defer cancel()
@@ -166,7 +168,7 @@ func main() {
 			{
 				Name:    "delete",
 				Aliases: []string{"rm"},
-				Usage:   "deletes a todo on the list",
+				Usage:   "Deletes a todo on the list",
 				Action: func(c *cli.Context) error {
 					var ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
 					defer cancel()
@@ -182,7 +184,7 @@ func main() {
 			{
 				Name:    "server",
 				Aliases: []string{"s"},
-				Usage:   "starts a server to interact with mongodb",
+				Usage:   "Starts a server to interact with mongodb",
 				Action: func(c *cli.Context) error {
 					runServer()
 					return nil
