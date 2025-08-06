@@ -8,8 +8,15 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o main
+ARG TARGETOS
+ARG TARGETARCH
+ARG GOARCH=$TARGETARCH \
+    GOOS=$TARGETOS
 
-EXPOSE 8081
+RUN CGO_ENABLED=0 GOOS=linux go build -v -a -installsuffix cgo -o main cmd/todos-app/main.go
 
-CMD ["./main"]
+RUN cp /app/main /bin/main
+
+EXPOSE 8080
+
+CMD ["/bin/main", "s"]
