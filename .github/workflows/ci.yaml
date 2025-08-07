@@ -15,13 +15,13 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ">=1.22.0"
-      - name: deps
+      - name: Download Dependencies
         run: make deps
-      - name: static analysis
+      - name: Run static analysis
         run: make fmt-check vet
-      - name: golangci-lint
+      - name: Run linter
         uses: golangci/golangci-lint-action@v8
         with:
           version: v2.1
-      - name: build
+      - name: Build executable
         run: make build
