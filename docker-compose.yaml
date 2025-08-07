@@ -1,0 +1,24 @@
+services:
+  todoapp:
+    restart: always
+    image: CharlesPatterson/todoapp
+    ports:
+      - 8080:8080
+  mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password1234
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password1234
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password1234@mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
+

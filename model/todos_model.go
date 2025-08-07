@@ -28,7 +28,13 @@ func init() {
 	databaseName := os.Getenv("DB_NAME")
 	collectionName := os.Getenv("DB_COLLECTION_NAME")
 
+	credential := options.Credential{
+		Username: os.Getenv("DB_USERNAME"),
+		Password: os.Getenv("DB_PASSWORD"),
+	}
+
 	clientOptions := options.Client().ApplyURI(mongoURI)
+	clientOptions.SetAuth(credential)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)

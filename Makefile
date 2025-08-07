@@ -3,6 +3,7 @@ GOLINT:=$(shell which golangci-lint)
 GOIMPORT:=$(shell which goimports)
 GOFMT:=$(shell which gofmt)
 DOCKER:=$(shell which docker)
+DOCKER_TAG:="CharlesPatterson/todoapp"
 GOBUILD:=$(GOCMD) build
 GOINSTALL:=$(GOCMD) install
 GOCLEAN:=$(GOCMD) clean
@@ -23,11 +24,11 @@ all: build
 
 .PHONY: build
 build: deps
-	$(GOBUILD) -o $(BINARY_NAME) ./cmd/todos-app
+	$(GOBUILD) -o $(BINARY_NAME) ./cmd/$(BINARY_NAME)
 
 .PHONY: docker
 docker: deps
-	$(DOCKER) build .
+	$(DOCKER) build -t $(DOCKER_TAG) .
 
 .PHONY: install
 install: deps
