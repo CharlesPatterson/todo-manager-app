@@ -38,6 +38,14 @@ func runServer() {
 	if err != nil {
 		return
 	}
+
+	r.NoMethod(func(c *gin.Context) {
+		c.JSON(405, gin.H{"code": "METHOD_NOT_ALLOWED", "message": "405 method not allowed"})
+	})
+	r.NoRoute(func(c *gin.Context) {
+		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "404 page not found"})
+	})
+
 	r.Static("/assets", "./assets")
 	version := "/api/v1"
 	v1 := r.Group(version)
