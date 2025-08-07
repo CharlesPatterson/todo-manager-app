@@ -2,6 +2,7 @@ GOCMD:=$(shell which go)
 GOLINT:=$(shell which golint)
 GOIMPORT:=$(shell which goimports)
 GOFMT:=$(shell which gofmt)
+DOCKER:=$(shell which docker)
 GOBUILD:=$(GOCMD) build
 GOINSTALL:=$(GOCMD) install
 GOCLEAN:=$(GOCMD) clean
@@ -23,6 +24,10 @@ all: build
 .PHONY: build
 build: deps
 	$(GOBUILD) -o $(BINARY_NAME) ./cmd/todos-app
+
+.PHONY: docker
+docker: deps
+	$(DOCKER) build .
 
 .PHONY: install
 install: deps
