@@ -34,7 +34,10 @@ func runServer() {
 	r.Use(middleware.TimeoutMiddleware())
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	r.SetTrustedProxies(nil)
+	err := r.SetTrustedProxies(nil)
+	if err != nil {
+		return
+	}
 	r.Static("/assets", "./assets")
 	version := "/api/v1"
 	v1 := r.Group(version)
@@ -54,8 +57,10 @@ func runServer() {
 		}
 	}
 	port := os.Getenv("PORT")
-	r.Run(port)
-
+	err = r.Run(port)
+	if err != nil {
+		log.Fatal("Failed to start server: ", err)
+	}
 }
 
 // @title Gin Todo API

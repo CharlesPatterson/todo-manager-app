@@ -104,7 +104,10 @@ func UpdateTodo(ctx context.Context, todo *Todo, id string) error {
 		},
 	}
 
-	collection.UpdateOne(ctx, filter, update)
+	_, err = collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -131,7 +134,10 @@ func FilterTodos(ctx context.Context, filter interface{}) ([]*Todo, error) {
 		return todos, err
 	}
 
-	cur.Close(ctx)
+	err = cur.Close(ctx)
+	if err != nil {
+		return todos, err
+	}
 
 	if len(todos) == 0 {
 		return todos, mongo.ErrNoDocuments
