@@ -1,5 +1,5 @@
 GOCMD:=$(shell which go)
-GOLINT:=$(shell which golint)
+GOLINT:=$(shell which golangci-lint)
 GOIMPORT:=$(shell which goimports)
 GOFMT:=$(shell which gofmt)
 DOCKER:=$(shell which docker)
@@ -32,6 +32,10 @@ docker: deps
 .PHONY: install
 install: deps
 	$(GOINSTALL) ./cmd/swag
+
+.PHONY: lint
+lint: deps
+	$(GOLINT) run
 
 .PHONY: clean
 clean:
