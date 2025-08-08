@@ -15,12 +15,15 @@ func GetRootRedirectHandler(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
 }
 
-// @Summary Get a TODO by ID
-// @ID get-todo-by-id
-// @Produce json
-// @Param id path string true "Todo ID"
-// @Success 200 {object} model.Todo
-// @Router /todos/{id} [get]
+// @Summary	Get a TODO by ID
+// @ID			get-todo-by-id
+// @Tags		Todos
+// @Produce	json
+// @Param		id				path	string	true	"Todo ID"
+// @Param		Authorization	header	string	false	"Authorization"
+// @Security	JWT
+// @Success	200	{object}	model.Todo
+// @Router		/todos/{id} [get]
 func GetTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 
@@ -33,13 +36,16 @@ func GetTodoByIdHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, todo)
 }
 
-// @Summary Update a TODO by ID
-// @ID update-todo-by-id
-// @Produce json
-// @Param id path string true "Todo ID"
-// @Param data body model.TodoDocInput true "Todo data"
-// @Success 204 {object} model.Todo
-// @Router /todos/{id} [put]
+// @Summary	Update a TODO by ID
+// @ID			update-todo-by-id
+// @Tags		Todos
+// @Produce	json
+// @Param		id				path	string				true	"Todo ID"
+// @Param		data			body	model.TodoDocInput	true	"Todo data"
+// @Param		Authorization	header	string				false	"Authorization"
+// @Security	JWT
+// @Success	204	{object}	model.Todo
+// @Router		/todos/{id} [put]
 func UpdateTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 
@@ -83,12 +89,15 @@ func getErrorMsg(fe validator.FieldError) string {
 	return "Unknown error"
 }
 
-// @Summary Create a todo
-// @ID create-todo
-// @Produce json
-// @Param data body model.TodoDocInput true "Todo data"
-// @Success 200 {object} model.Todo
-// @Router /todos [post]
+// @Summary	Create a todo
+// @ID			create-todo
+// @Tags		Todos
+// @Produce	json
+// @Param		data			body	model.TodoDocInput	true	"Todo data"
+// @Param		Authorization	header	string				false	"Authorization"
+// @Security	JWT
+// @Success	200	{object}	model.Todo
+// @Router		/todos [post]
 func CreateTodoHandler(c *gin.Context) {
 	var newTodo model.Todo
 
@@ -117,12 +126,15 @@ func CreateTodoHandler(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, newTodo)
 }
 
-// @Summary Get all todos
-// @ID get-all-todos
-// @Description Get all todos without any filtering
-// @Produce json
-// @Success 200 {array} model.Todo
-// @Router /todos [get]
+// @Summary		Get all todos
+// @ID				get-all-todos
+// @Tags			Todos
+// @Description	Get all todos without any filtering
+// @Produce		json
+// @Param			Authorization	header	string	false	"Authorization"
+// @Security		JWT
+// @Success		200	{array}	model.Todo
+// @Router			/todos [get]
 func GetAllTodosHandler(c *gin.Context) {
 	todos, err := model.GetAll(c)
 	if err != nil {
@@ -133,12 +145,15 @@ func GetAllTodosHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, todos)
 }
 
-// @Summary Delete a todo
-// @ID delete-todo-by-id
-// @Produce json
-// @Param id path string true "Todo ID"
-// @Success 204 {object} model.Todo
-// @Router /todos/{id}  [delete]
+// @Summary	Delete a todo
+// @ID			delete-todo-by-id
+// @Tags		Todos
+// @Produce	json
+// @Param		id				path	string	true	"Todo ID"
+// @Param		Authorization	header	string	false	"Authorization"
+// @Security	JWT
+// @Success	204	{object}	model.Todo
+// @Router		/todos/{id}  [delete]
 func DeleteTodoByIdHandler(c *gin.Context) {
 	id := c.Param("id")
 

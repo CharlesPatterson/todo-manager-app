@@ -13,6 +13,7 @@ import (
 	docs "github.com/CharlesPatterson/todos-app/docs"
 	"github.com/CharlesPatterson/todos-app/middleware"
 	"github.com/CharlesPatterson/todos-app/model"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -24,6 +25,13 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// @Summary	Login
+// @ID			login
+// @Tags		Auth
+// @Produce	json
+// @Param		data	body		middleware.Login	true	"Login credentials"
+// @Success	200		{object}	model.Todo
+// @Router		/login [post]
 func runServer() {
 	r := gin.New()
 	if os.Getenv("ENVIRONMENT") == "production" {
@@ -38,6 +46,11 @@ func runServer() {
 	if err != nil {
 		return
 	}
+	authMiddleware, err := jwt.New(middleware.InitJWTParams())
+	r.Use(middleware.HandlerMiddleware(authMiddleware))
+	if err != nil {
+		log.Fatal("JWT Error:" + err.Error())
+	}
 
 	r.NoMethod(func(c *gin.Context) {
 		c.JSON(405, gin.H{"code": "METHOD_NOT_ALLOWED", "message": "405 method not allowed"})
@@ -48,7 +61,10 @@ func runServer() {
 
 	r.Static("/assets", "./assets")
 	version := "/api/v1"
-	v1 := r.Group(version)
+	r.POST("/api/v1/login", authMiddleware.LoginHandler)
+	auth := r.Group("/auth", authMiddleware.MiddlewareFunc())
+	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
+	v1 := r.Group(version, authMiddleware.MiddlewareFunc())
 	{
 		v1.GET("/todos", controller.GetAllTodosHandler)
 		v1.PUT("/todos/:id", controller.UpdateTodoByIdHandler)
@@ -71,19 +87,23 @@ func runServer() {
 	}
 }
 
-// @title Gin Todo API
-// @version 1.0
-// @description CLI and API for managing TODOs in MongoDB
-// @contact.name Charles Patterson
-// @contact.url https://github.com/CharlesPatterson/
-// @contact.email pattercm@gmail.com
-// @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
-// @host localhost:8080
-// @BasePath /api/v1
-// @schemes http https
-// @query.collection.format multi
+// @title						Gin Todo API
+// @version					1.0
+// @description				CLI and API for managing TODOs in MongoDB
+// @contact.name				Charles Patterson
+// @contact.url				https://github.com/CharlesPatterson/
+// @contact.email				pattercm@gmail.com
+// @license.name				MIT
+// @license.url				https://opensource.org/licenses/MIT
+// @host						localhost:8080
+// @BasePath					/api/v1
+// @schemes					http https
+// @query.collection.format	multi
+// @securityDefinitions.apiKey	JWT
+// @in							header
+// @name						Authorization
 func main() {
+
 	app := &cli.App{
 		Version: golangtodomanager.Version,
 		Name:    "Todos App",
