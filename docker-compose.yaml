@@ -10,6 +10,8 @@ services:
   mongodb:
     image: mongo
     restart: always
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password1234
@@ -24,9 +26,20 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: password1234
       ME_CONFIG_MONGODB_URL: mongodb://admin:password1234@mongodb:27017/
       ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - mongodb
   redis:
     image: redis
     restart: always
     ports:
       - '6379:6379'
+  redisinsight:
+    image: redis/redisinsight
+    restart: always
+    ports:
+      - '5540:5540'
+    environment:
+      RI_REDIS_HOST: redis
+    depends_on:
+      - redis
 
