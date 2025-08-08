@@ -7,6 +7,7 @@ require (
 	github.com/chenyahui/gin-cache v1.10.0
 	github.com/fatih/color v1.18.0
 	github.com/gin-contrib/gzip v1.2.3
+	github.com/gin-contrib/requestid v1.0.5
 	github.com/gin-contrib/timeout v1.1.0
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-playground/validator/v10 v10.27.0
@@ -38,6 +39,7 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/jellydator/ttlcache/v2 v2.11.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

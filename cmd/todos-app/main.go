@@ -16,6 +16,7 @@ import (
 	jwt "github.com/appleboy/gin-jwt/v2"
 	cache "github.com/chenyahui/gin-cache"
 	"github.com/gin-contrib/gzip"
+	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -41,6 +42,7 @@ func runServer() {
 	if os.Getenv("ENVIRONMENT") == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
+	r.Use(requestid.New())
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 	r.Use(middleware.TimeoutMiddleware())
