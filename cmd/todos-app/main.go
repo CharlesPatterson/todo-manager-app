@@ -22,6 +22,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 
 	"github.com/urfave/cli/v2"
 )
@@ -62,6 +63,17 @@ func runServer() {
 		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "404 page not found"})
 	})
 	r.GET("/healthz", func(c *gin.Context) {
+		c.JSON(200, "")
+	})
+	r.GET("/readyz", func(c *gin.Context) {
+		redisStatusError := cacheConfig.Store.RedisClient.Ping(c).Err()
+		if redisStatusError != nil {
+			c.JSON(500, "Redis is unreachable")
+		}
+		mongoStatusError := model.Collection.Database().Client().Ping(c, readpref.Primary())
+		if mongoStatusError != nil {
+			c.JSON(500, "MongoDB is unreachable")
+		}
 		c.JSON(200, "")
 	})
 

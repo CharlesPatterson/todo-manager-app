@@ -15,7 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var collection *mongo.Collection
+var Collection *mongo.Collection
 
 func init() {
 	var ctx = context.TODO()
@@ -45,7 +45,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	collection = client.Database(databaseName).Collection(collectionName)
+	Collection = client.Database(databaseName).Collection(collectionName)
 }
 
 type TodoDocInput struct {
@@ -62,7 +62,7 @@ type Todo struct {
 }
 
 func CreateTodo(ctx context.Context, todo *Todo) error {
-	_, err := collection.InsertOne(ctx, todo)
+	_, err := Collection.InsertOne(ctx, todo)
 	return err
 }
 
@@ -79,7 +79,7 @@ func GetTodoById(ctx context.Context, id string) (*Todo, error) {
 
 	filter := bson.M{"_id": objectId}
 	t := &Todo{}
-	err = collection.FindOne(ctx, filter).Decode(t)
+	err = Collection.FindOne(ctx, filter).Decode(t)
 	if err != nil {
 		return t, err
 	}
@@ -97,7 +97,7 @@ func UpdateTodo(ctx context.Context, todo *Todo, id string) error {
 		Key: "_id", Value: objectId,
 	}}
 	t := &Todo{}
-	err = collection.FindOne(ctx, filter).Decode(t)
+	err = Collection.FindOne(ctx, filter).Decode(t)
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func UpdateTodo(ctx context.Context, todo *Todo, id string) error {
 		},
 	}
 
-	_, err = collection.UpdateOne(ctx, filter, update)
+	_, err = Collection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		return err
 	}
@@ -121,7 +121,7 @@ func UpdateTodo(ctx context.Context, todo *Todo, id string) error {
 func FilterTodos(ctx context.Context, filter interface{}) ([]*Todo, error) {
 	var todos []*Todo
 
-	cur, err := collection.Find(ctx, filter)
+	cur, err := Collection.Find(ctx, filter)
 	if err != nil {
 		return todos, err
 	}
@@ -160,7 +160,7 @@ func CompleteTodo(ctx context.Context, text string) error {
 	}}}
 
 	t := &Todo{}
-	return collection.FindOneAndUpdate(ctx, filter, update).Decode(t)
+	return Collection.FindOneAndUpdate(ctx, filter, update).Decode(t)
 }
 
 func GetPending(ctx context.Context) ([]*Todo, error) {
@@ -187,7 +187,7 @@ func DeleteTodoById(ctx context.Context, id string) error {
 
 	filter := bson.M{"_id": objectId}
 
-	res, err := collection.DeleteOne(ctx, filter)
+	res, err := Collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return err
 	}
@@ -204,7 +204,7 @@ func DeleteTodo(ctx context.Context, text string) error {
 		primitive.E{Key: "text", Value: text},
 	}
 
-	res, err := collection.DeleteOne(ctx, filter)
+	res, err := Collection.DeleteOne(ctx, filter)
 	if err != nil {
 		return err
 	}
