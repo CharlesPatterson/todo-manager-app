@@ -4,6 +4,9 @@ services:
     image: CharlesPatterson/todoapp
     ports:
       - 8080:8080
+    depends_on:
+      - redis
+      - mongodb
   mongodb:
     image: mongo
     restart: always
@@ -21,4 +24,9 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: password1234
       ME_CONFIG_MONGODB_URL: mongodb://admin:password1234@mongodb:27017/
       ME_CONFIG_BASICAUTH: false
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
 

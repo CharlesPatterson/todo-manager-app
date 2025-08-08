@@ -14,6 +14,7 @@ import (
 	"github.com/CharlesPatterson/todos-app/middleware"
 	"github.com/CharlesPatterson/todos-app/model"
 	jwt "github.com/appleboy/gin-jwt/v2"
+	cache "github.com/chenyahui/gin-cache"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -33,6 +34,8 @@ import (
 // @Success	200		{object}	model.Todo
 // @Router		/login [post]
 func runServer() {
+	cacheConfig := model.SetupRedisCache()
+
 	r := gin.New()
 	if os.Getenv("ENVIRONMENT") == "production" {
 		gin.SetMode(gin.ReleaseMode)
@@ -66,10 +69,10 @@ func runServer() {
 	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
 	v1 := r.Group(version, authMiddleware.MiddlewareFunc())
 	{
-		v1.GET("/todos", controller.GetAllTodosHandler)
+		v1.GET("/todos", cache.CacheByRequestURI(cacheConfig.Store, cacheConfig.DefaultCacheTime), controller.GetAllTodosHandler)
 		v1.PUT("/todos/:id", controller.UpdateTodoByIdHandler)
 		v1.POST("/todos", controller.CreateTodoHandler)
-		v1.GET("/todos/:id", controller.GetTodoByIdHandler)
+		v1.GET("/todos/:id", cache.CacheByRequestURI(cacheConfig.Store, cacheConfig.DefaultCacheTime), controller.GetTodoByIdHandler)
 		v1.DELETE("/todos/:id", controller.DeleteTodoByIdHandler)
 	}
 	if os.Getenv("ENVIRONMENT") != "production" {
