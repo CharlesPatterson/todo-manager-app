@@ -61,6 +61,9 @@ func runServer() {
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "404 page not found"})
 	})
+	r.GET("/healthz", func(c *gin.Context) {
+		c.JSON(200, "")
+	})
 
 	r.Static("/assets", "./assets")
 	version := "/api/v1"
