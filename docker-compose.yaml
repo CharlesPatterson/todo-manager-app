@@ -2,6 +2,12 @@ services:
   todoapp:
     restart: always
     image: CharlesPatterson/todoapp
+    healthcheck:
+      test: curl --fail http://localhost:8080/healthz || exit 1
+      interval: 10s
+      start_period: 10s
+      timeout: 10s
+      retries: 3
     ports:
       - 8080:8080
     depends_on:
@@ -12,6 +18,10 @@ services:
     restart: always
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      start_period: 10s
+      timeout: 10s
+      retries: 3
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password1234
@@ -31,6 +41,12 @@ services:
   redis:
     image: redis
     restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 10s
+      start_period: 10s
+      retries: 3
     ports:
       - '6379:6379'
   redisinsight:
