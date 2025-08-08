@@ -29,6 +29,12 @@ services:
   mongo-express:
     image: mongo-express
     restart: always
+    healthcheck:
+      test: curl --fail http://localhost:8081/ || exit 1
+      interval: 10s
+      start_period: 10s
+      timeout: 10s
+      retries: 3
     ports:
       - 8081:8081
     environment:
@@ -52,6 +58,12 @@ services:
   redisinsight:
     image: redis/redisinsight
     restart: always
+    healthcheck:
+      test: curl --fail http://localhost:5540/api/health/ || exit 1
+      interval: 10s
+      start_period: 10s
+      timeout: 10s
+      retries: 3
     ports:
       - '5540:5540'
     environment:
