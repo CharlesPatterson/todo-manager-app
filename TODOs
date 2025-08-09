@@ -2,7 +2,6 @@ TODO Separate out CLI and API
 TODO Add tests
 TODO Add adapter to use Postgres instead
 TODO Add users / user-specific data
-TODO Setup docker compose for databases
 TODO Add commitlint
 TODO Add LetsEncrypt
 TODO Add security headers
