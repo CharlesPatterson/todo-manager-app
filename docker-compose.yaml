@@ -37,6 +37,7 @@ services:
       timeout: 10s
       start_period: 10s
       retries: 3
+    profiles: ["admin-tools"]
     ports:
       - 15433:80
     environment:
@@ -62,6 +63,7 @@ services:
   mongo-express:
     image: mongo-express
     restart: always
+    profiles: ["admin-tools"]
     ports:
       - 8081:8081
     environment:
@@ -85,6 +87,7 @@ services:
       - '6379:6379'
   redisinsight:
     image: redis/redisinsight
+    profiles: ["admin-tools"]
     restart: always
     ports:
       - '5540:5540'
@@ -93,3 +96,13 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+  dynamodb-local:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    profiles: ["dynamodb"]
+    ports:
+     - "8000:8000"
+    volumes:
+     - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal

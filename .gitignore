@@ -34,5 +34,8 @@ go.work.sum
 # Misc
 .DS_Store
 
+# Docker volume for dynamodb
+docker/
+
 # Project-specific binaries
 todos-app
