@@ -97,7 +97,7 @@ services:
       redis:
         condition: service_healthy
   dynamodb-local:
-    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data -disableTelemetry"
     image: "amazon/dynamodb-local:latest"
     container_name: dynamodb-local
     profiles: ["dynamodb"]
